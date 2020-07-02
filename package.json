@@ -1,0 +1,23 @@
+{
+  "name": "niu-app",
+  "version": "1.0.0",
+  "description": "niu-app",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "wangli",
+  "license": "ISC",
+  "keywords": [
+    "demo"
+  ],
+  "dependencies": {
+    "axios": "^0.19.2",
+    "js-md5": "^0.7.3",
+    "lockr": "^0.8.5",
+    "moment": "^2.26.0",
+    "uni-request": "^1.0.2",
+    "uni-simple-router": "^1.5.5"
+  },
+  "devDependencies": {}
+}
