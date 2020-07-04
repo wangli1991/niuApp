@@ -77,17 +77,17 @@
     "uniStatistics" : {
         "enable" : false
     },
-	"h5": {
-		"devServer": {
-			"port": 8088,
-			"disableHostCheck": true,
-			"proxy": {
-				"/api": {
-					"target": "http://10.133.73.187:8888",
-					"changeOrigin": true,
-					"secure": false
-				}
-			}
-		}
-	}
+    "h5" : {
+        "devServer" : {
+            "port" : 8088,
+            "disableHostCheck" : true,
+            "proxy" : {
+                "/api" : {
+                    "target" : "http://39.106.219.221:8888",
+                    "changeOrigin" : true,
+                    "secure" : false
+                }
+            }
+        }
+    }
 }

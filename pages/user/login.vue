@@ -1,6 +1,5 @@
 <template>
 	<view class="content">
-		<uni-status-bar />
 		<view class="login-title">欢迎使用</view>
 		<view class="form">
 			<view class="form-list">
