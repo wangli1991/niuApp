@@ -85,7 +85,6 @@ router.beforeEach((to, from, next) => {
 	) {
 		try {
 			const value = uni.getStorageSync("userinfo");
-			console.log(!value)
 			if (!value) {
 				next({
 					name: "login",
