@@ -28,14 +28,12 @@
 					</uni-swiper-dot>
 				</view>
 				<view class="menu">
-					<view class="menu-container">
-						<view class="menu-item" v-for="(item,index) in menuList" :key="index">
-							<router-link :to="item.url">
-								<image class="img" :src="item.imgPath" mode="scaleToFill" lazy-load="true"></image>
-								<view class="title">
-									{{item.name}}
-								</view>
-							</router-link>
+					<view class="menu-container" @tap="menuTap">
+						<view class="menu-item" v-for="(item,index) in menuList" :key="index" :data-index="index">
+							<image class="img" :src="item.imgPath" mode="scaleToFill" lazy-load="true" :data-index="index"></image>
+							<view class="title" :data-index="index">
+								{{item.name}}
+							</view>
 						</view>
 					</view>
 				</view>
@@ -139,6 +137,20 @@
 			this.getMenu()
 		},
 		methods: {
+			menuTap(e){
+				const currentMenu=e.target.dataset.index
+				const menuUrl=this.menuList[currentMenu].url
+				if(!menuUrl){
+					uni.showToast({
+						title: '此功能暂未开放',
+						duration: 2000,
+						mask: true,
+						icon: "none"
+					});
+					return
+				}
+				this.$Router.push(menuUrl);
+			},
 			change(e) {
 				this.current = e.detail.current
 			},

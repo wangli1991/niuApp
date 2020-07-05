@@ -42,7 +42,7 @@
 				switch (category) {
 					case 1:
 						this.dataList = [{
-							name: '公牛菜单',
+							name: '转品种',
 							path: '/pages/ranch/variety-change'
 						}]
 						break;
