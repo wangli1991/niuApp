@@ -1,5 +1,5 @@
 {
-    "name" : "niu_app",
+    "name" : "niu",
     "appid" : "__UNI__528437A",
     "description" : "",
     "versionName" : "1.0.0",
@@ -12,7 +12,7 @@
         "compilerVersion" : 3,
         "splashscreen" : {
             "alwaysShowBeforeRender" : true,
-            "waiting" : true,
+            "waiting" : false,
             "autoclose" : true,
             "delay" : 0
         },

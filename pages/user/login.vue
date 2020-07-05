@@ -5,7 +5,7 @@
 			<view class="form-list">
 				<uni-icons type="person" class="icon-l" :size="actionIconSize" :color="iconColor"></uni-icons>
 				<view class="form-input">
-					<input class="input" type="text" v-model="mobile" placeholder="请输入手机号" :value="mobile" />
+					<input class="input" type="number" v-model="mobile" placeholder="请输入手机号" />
 				</view>
 			</view>
 			<view class="form-list">
@@ -79,7 +79,6 @@
 				}
 			});
 			let query = this.$Route.query
-			console.log(query)
 			if (query) {
 				if(query.mobile){
 					this.mobile = query.mobile;
@@ -146,20 +145,24 @@
 					return false;
 				}     
 				const resData = res.data;
-				uni.setStorage({
-					key: 'userinfo',
-					data: JSON.stringify(resData),
-					success: function() {
-						console.log('success');
-					}
-				});
+				try {
+				    uni.setStorageSync('userinfo',JSON.stringify(resData));
+				} catch (e) {
+				    // error
+					console.log(e)
+				}
 				let fromPath=''
 				if(this.fromPath){
 					fromPath=this.fromPath
 				}else{
 					fromPath='/pages/mine/mine'
 				}
-				this.$Router.push(fromPath);
+				console.log(fromPath)
+				if(fromPath.indexOf('mine')||fromPath.indexOf('home')){
+					this.$Router.pushTab(fromPath);
+				}else{
+					this.$Router.push(fromPath);
+				}
 			},
 			errorToast(title) {
 				uni.showToast({
