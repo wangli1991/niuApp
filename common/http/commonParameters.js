@@ -36,11 +36,8 @@ function sign(params, config) {
   let url = connectUrl(config.baseUrl, config.url);
   signStr += url + "_";
   signStr += "appkey=" + params.vAppKey + "_";
-  signStr += JSON.stringify(config.data) + "_";
   signStr += secretKey + "_";
   signStr += moment(new Date()).format("YYYYMMDD") + "_";
-  signStr += params.userid + "_";
-  signStr += params.companyid;
   signStr = md5(signStr.toLowerCase());
   return signStr;
 }

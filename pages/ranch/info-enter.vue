@@ -479,7 +479,11 @@
 				rightImgPath: '', //右侧照片src
 				imageFiles: [], //图片文件列表
 				imageList: [], //图片列表
-				uid: "",
+				uid: '',//用户id
+				poiAddress:'',//当前定位地点
+				poiName:'',//当前定位名称
+				poiLongitude:0,//当前经度
+				poiLatitude:0//当前纬度
 			};
 		},
 		computed: {},
@@ -511,9 +515,11 @@
 			this.getFattenTimeList();
 			this.getCalfFeedingModeList();
 			this.getCowFeedingModeList();
+			this.getLocation()
 		},
 		methods: {
 			async subTap() {
+				this.getLocation()
 				if (this.currentCategory == 1) {
 					this.sex = 1
 				}
@@ -555,6 +561,10 @@
 					calfFeedingMode,
 					cowFeedingMode,
 					healthEvaluation,
+					poiAddress,
+					poiName,
+					poiLongitude,
+					poiLatitude
 				} = this;
 				const category=oldCategoryList[currentCategory].id
 				let params = {
@@ -593,7 +603,11 @@
 					daily_gain_expect: Number(dailyGainExpect),
 					out_weight_expect: Number(outWeightExpect),
 					calf_feeding_mode: calfFeedingMode,
-					cow_feeding_mode: cowFeedingMode
+					cow_feeding_mode: cowFeedingMode,
+					poi_address:poiAddress,
+					poi_name:poiName,
+					poi_longitude:poiLongitude,
+					poi_latitude:poiLatitude
 				};
 				console.log(params);
 				const res = await this.$http.request({
@@ -611,6 +625,19 @@
 						path: "/pages/ranch/ranch"
 					});
 				}, 1000)
+			},
+			getLocation(){
+				const _this=this
+				uni.getLocation({
+				    type: 'wgs84',
+					geocode:true,
+				    success: function (res) {
+						_this.poiAddress=res.address.province+res.address.city+res.address.district+res.address.street+res.address.streetNum
+						_this.poiName=res.address.poiName
+						_this.poiLongitude=res.longitude
+						_this.poiLatitude=res.latitude
+				    }
+				});
 			},
 			scroll(e) {
 				this.old.scrollTop = e.detail.scrollTop;

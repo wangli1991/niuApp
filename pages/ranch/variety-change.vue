@@ -70,7 +70,13 @@
 				weight: '', //入栏体重
 				healthEvaluation: "", //健康评估
 				healthEvaluationList: [], //健康评估List
-				id: ''//牛列表id
+				id: '',//牛列表id
+				actionMenuId:'',//记录类型id
+				actionMenuName:'',//记录类型name
+				poiAddress:'',//当前定位地点
+				poiName:'',//当前定位名称
+				poiLongitude:0,//当前经度
+				poiLatitude:0//当前纬度
 			}
 		},
 		mounted() {
@@ -89,13 +95,17 @@
 				}
 			})
 			let query = this.$Route.query
-			this.id = query.id
+			this.id = query.niuId
 			this.oldCategory=query.category
+			this.actionMenuId=query.actionMenuId
+			this.actionMenuName=query.actionMenuName
 			this.getCategoryList()
 			this.getHealthEvaluationList()
+			this.getLocation()
 		},
 		methods: {
 			async subTap() {
+				this.getLocation()
 				const {
 					id,
 					currentCategory,
@@ -103,15 +113,30 @@
 					date,
 					weight,
 					healthEvaluation,
+					actionMenuId,
+					actionMenuName,
+					categoryVal,
+					oldCategory,
+					poiAddress,
+					poiName,
+					poiLongitude,
+					poiLatitude
 				}=this
 				const category=categoryIds[currentCategory]
-				console.log(category)
 				const params={
-					id:id,
-					category:category,
+					niu_id:id,
 					date:date,
 					weight: Number(weight),
 					health_evaluation: healthEvaluation,
+					old_category:oldCategory,
+					category:category,
+					type:actionMenuName,
+					type_id:actionMenuId,
+					name:categoryVal,
+					poi_address:poiAddress,
+					poi_name:poiName,
+					poi_longitude:poiLongitude,
+					poi_latitude:poiLatitude
 				}
 				const res = await this.$http.request({
 					url: "/niu/niuChange",
@@ -124,7 +149,7 @@
 				}
 				this.errorToast(res.msg, 'success');
 				setTimeout(() => {
-					this.$Router.push({
+					this.$Router.replace({
 						path: "/pages/ranch/ranch"
 					});
 				}, 1000)
@@ -150,7 +175,7 @@
 				const res = await this.$http.request({
 					url: "/niu/getCategoryList",
 					method: "get",
-					data: {}
+					data: {category:this.oldCategory}
 				});
 				const resData = res.data;
 				let dataList = [];
@@ -176,6 +201,19 @@
 					dataList.push(val.name);
 				});
 				this.healthEvaluationList = dataList;
+			},
+			getLocation(){
+				const _this=this
+				uni.getLocation({
+				    type: 'wgs84',
+					geocode:true,
+				    success: function (res) {
+						_this.poiAddress=res.address.province+res.address.city+res.address.district+res.address.street+res.address.streetNum
+						_this.poiName=res.address.poiName
+						_this.poiLongitude=res.longitude
+						_this.poiLatitude=res.latitude
+				    }
+				});
 			},
 			errorToast(title, icon) {
 				uni.showToast({

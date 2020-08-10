@@ -66,7 +66,7 @@
 				</swiper-item>
 			</swiper>
 		</view>
-		<uni-foot-pop :category="category" :is-pop-show="isPopShow" @close="popClose" @action="popAction"/>
+		<uni-foot-pop :category="category" :is-pop-show="isPopShow" @close="popClose" @action="popAction" v-if="category"/>
 	</view>
 </template>
 
@@ -76,7 +76,6 @@
 			return {
 				sortType: 'none', //当前排序类型
 				categoryList: [], //分类List
-				category:'',//选中分类
 				currentCategory: 0, //选中分类 index
 				moreIconSize: 30, //更多图标字体大小
 				pageSize: 10, //每次加载数据数量
@@ -111,6 +110,11 @@
 			this.maxCount = this.pageSize
 			this.getCategoryList()
 		},
+		computed:{
+			category(){
+				return this.categoryList.length>0?this.categoryList[this.currentCategory].id:null
+			}
+		},
 		methods: {
 			categoryTap(val) {
 				if (val == this.currentCategory) {
@@ -121,7 +125,6 @@
 			categoryChange(e) {
 				this.currentCategory = e.detail.current
 				this.initLoadMore()
-				this.category = this.categoryList[e.detail.current].id
 				this.initDataList()
 			},
 			categoryTransition(e) {},
@@ -131,11 +134,10 @@
 					loading: false,
 					url: "/niu/getCategoryList",
 					method: "get",
-					data: {}
+					data: {category:''}
 				});
 				const resData = res.data;
 				this.categoryList = resData;
-				this.category = this.categoryList[this.currentCategory].id
 				this.initDataList()
 			},
 			async initDataList() {
@@ -198,11 +200,15 @@
 				});
 			},
 			popAction(e){
+				console.log(e)
+				this.isPopShow=false
 				this.$Router.push({
-					path: e,
+					path: e.path,
 					query: {
-						id: this.dataId,
-						category: this.category
+						niuId: this.dataId,
+						category: this.category,
+						actionMenuId:e.actionMenuId,
+						actionMenuName:e.actionMenuName,
 					}
 				});
 			},
@@ -227,9 +233,7 @@
 				this.sortType = sortType
 			},
 			onNavigationBarButtonTap(e) { //导航栏右上角 牛只录入点击事件
-				this.$router.push({
-					name: 'infoEnter'
-				})
+				this.$Router.push('/pages/ranch/info-enter')
 			},
 			onPullDownRefresh() {
 				this.initLoadMore()

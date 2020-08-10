@@ -20,6 +20,6 @@
 	.uni-status-bar {
 		width: 100vw;
 		height: 20px;
-		background-color: $uni-text-color;
+		background-color: $uni-bg-color-green;
 	}
 </style>

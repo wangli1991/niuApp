@@ -3,7 +3,8 @@
 		"path": "pages/home/home",
 		"style": {
 			"navigationStyle": "custom", //导航栏样式,custom即取消默认的原生导航栏
-			"enablePullDownRefresh": true //是否开启下拉刷新
+			"enablePullDownRefresh": true ,//是否开启下拉刷新
+			"navigationBarTextStyle":"white"
 		}
 	}, {
 		"path": "pages/news/news",
@@ -40,7 +41,8 @@
 					"buttons": [{
 						"color": "#29a529",
 						"fontSize": "32rpx",
-						"text": "牛只录入"
+						"text": "牛只录入",
+						"width":"100px"
 					}]
 				}
 			}

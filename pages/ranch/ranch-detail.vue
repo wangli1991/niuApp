@@ -353,7 +353,7 @@
 					return false;
 				}
 				const resData=res.data
-				this.dataList = resData;
+				this.dataList = resData.data;
 			},
 			previewImage: function(e) {
 				const current = e.target.dataset.src

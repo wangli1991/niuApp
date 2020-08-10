@@ -38,36 +38,27 @@
 			this.getMenu(this.category)
 		},
 		methods: {
-			getMenu(category) {
-				switch (category) {
-					case 1:
-						this.dataList = [{
-							name: '转品种',
-							path: '/pages/ranch/variety-change'
-						}]
-						break;
-					case 2:
-						this.dataList = [{
-							name: '转品种',
-							path: '/pages/ranch/variety-change'
-						}]
-						break;
-					case 3:
-						this.dataList = [{
-							name: '转品种',
-							path: '/pages/ranch/variety-change'
-						}]
-						break;
-					case 4:
-						this.dataList = [{
-							name: '转品种',
-							path: '/pages/ranch/variety-change'
-						}]
-						break;
+			async getMenu(category) {
+				category=Number(category)
+				const res = await this.$http.request({
+					loading: false,
+					url: "/actionMenu/getActionMenuList",
+					method: "get",
+					data: {category:category}
+				});
+				if (res.status === "E") {
+					this.errorToast(res.msg);
+					return false;
 				}
+				const resData = res.data;
+				this.dataList=resData
 			},
 			actionTap(index) {
-				this.$emit('action', this.dataList[index].path)
+				this.$emit('action', {
+					path:this.dataList[index].path,
+					actionMenuId:this.dataList[index].id,
+					actionMenuName:this.dataList[index].name,
+				})
 			},
 			closePop() {
 				this.$emit('close', true)
