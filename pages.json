@@ -3,8 +3,8 @@
 		"path": "pages/home/home",
 		"style": {
 			"navigationStyle": "custom", //导航栏样式,custom即取消默认的原生导航栏
-			"enablePullDownRefresh": true ,//是否开启下拉刷新
-			"navigationBarTextStyle":"white"
+			"enablePullDownRefresh": true, //是否开启下拉刷新
+			"navigationBarTextStyle": "white"
 		}
 	}, {
 		"path": "pages/news/news",
@@ -40,9 +40,9 @@
 				"titleNView": {
 					"buttons": [{
 						"color": "#29a529",
-						"fontSize": "32rpx",
+						"fontSize": "16px",
 						"text": "牛只录入",
-						"width":"100px"
+						"width": "100px"
 					}]
 				}
 			}
@@ -55,10 +55,10 @@
 				"colorType": "grey"
 			}
 		}
-	},{
-		"path": "pages/ranch/variety-change",
+	}, {
+		"path": "pages/ranch/map",
 		"style": {
-			"navigationBarTitleText": "转品种",
+			"navigationBarTitleText": "地图",
 			"navigationBarShadow": {
 				"colorType": "grey"
 			}
@@ -120,12 +120,27 @@
 				"colorType": "grey"
 			}
 		}
+	}, {
+		"path": "pages/records/index",
+		"style": {
+			"navigationBarTitleText": "牛档案"
+		}
+	}, {
+		"path": "pages/records/records-list",
+		"style": {
+			"navigationStyle":"custom"
+		}
+	}, {
+		"path": "pages/ranch/actions",
+		"style": {
+			"navigationStyle":"custom"
+		}
 	}],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",
 		"navigationBarBackgroundColor": "#ffffff",
-		"backgroundColor": "#f5f5f5"
+		"backgroundColor": "#fbfbfb"
 	},
 	"tabBar": {
 		"color": "#333",

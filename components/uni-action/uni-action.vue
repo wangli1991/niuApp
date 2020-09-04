@@ -1,9 +1,9 @@
 <template>
-	<view class="foot-pop-content">
-		<view class="foot-pop" :class="{show:isPopShow}">
+	<view class="action-content">
+		<view class="action" :class="{show:isPopShow}">
 			<view class="mask" @tap="closePop"></view>
-			<view class="pop-container">
-				<view class="pop-list" v-for="(item,index) in dataList" :key="index" @tap="actionTap(index)">
+			<view class="action-container">
+				<view class="action-list" v-for="(item,index) in dataList" :key="index" @tap="actionTap(index)">
 					<image src="../../static/logo.png" mode="scaleToFill" class="img"></image>
 					<text class="title">{{item.name}}</text>
 				</view>
@@ -55,9 +55,9 @@
 			},
 			actionTap(index) {
 				this.$emit('action', {
-					path:this.dataList[index].path,
 					actionMenuId:this.dataList[index].id,
 					actionMenuName:this.dataList[index].name,
+					actionMenuCode:this.dataList[index].name_code
 				})
 			},
 			closePop() {
@@ -68,7 +68,7 @@
 </script>
 
 <style lang="scss" scoped>
-	.foot-pop {
+	.action {
 		position: fixed;
 		left: 0;
 		right: 0;
@@ -89,7 +89,7 @@
 			opacity: 0;
 		}
 
-		.pop-container {
+		.action-container {
 			width: 100%;
 			position: fixed;
 			left: 0;
@@ -101,7 +101,7 @@
 			display: flex;
 			flex-wrap: wrap;
 
-			.pop-list {
+			.action-list {
 				width: 20%;
 				display: flex;
 				flex-direction: column;
@@ -128,7 +128,7 @@
 				opacity: 1;
 			}
 
-			.pop-container {
+			.action-container {
 				transform: translateY(0);
 			}
 		}

@@ -101,7 +101,6 @@
 			}
 		},
 		methods: {
-			...mapMutations(["setUserInfo"]),
 			eyeTap() {
 				this.isPwdShow = !this.isPwdShow;
 			},
@@ -157,11 +156,10 @@
 				}else{
 					fromPath='/pages/mine/mine'
 				}
-				console.log(fromPath)
-				if(fromPath.indexOf('mine')||fromPath.indexOf('home')){
+				if(fromPath.indexOf('mine')!=-1||fromPath.indexOf('home')!=-1){
 					this.$Router.pushTab(fromPath);
 				}else{
-					this.$Router.push(fromPath);
+					this.$Router.replace(fromPath);
 				}
 			},
 			errorToast(title) {

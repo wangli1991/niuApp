@@ -495,13 +495,8 @@
 					_this.actionIconSize = 40 * format;
 				}
 			});
-			uni.getStorage({
-				key: "userinfo",
-				success: function(res) {
-					const userInfo = JSON.parse(res.data);
-					_this.uid = userInfo.uid;
-				}
-			})
+			const userInfo = JSON.parse(uni.getStorageSync('userinfo'));
+			this.uid = userInfo.uid;
 			this.getCategoryList()
 			this.getParentNoList()
 			this.getVarietyList();
@@ -802,7 +797,7 @@
 			},
 			async getVarietyList() {
 				const res = await this.$http.request({
-					url: "/variety/getVarietyList",
+					url: "/baseList/getVarietyList",
 					method: "get",
 					data: {}
 				});
@@ -815,7 +810,7 @@
 			},
 			async getHairColorList() {
 				const res = await this.$http.request({
-					url: "/hairColor/getHairColorList",
+					url: "/baseList/getHairColorList",
 					method: "get",
 					data: {}
 				});
@@ -828,7 +823,7 @@
 			},
 			async getBirthCountList() {
 				const res = await this.$http.request({
-					url: "/birthCount/getBirthCountList",
+					url: "/baseList/getBirthCountList",
 					method: "get",
 					data: {}
 				});
@@ -841,7 +836,7 @@
 			},
 			async getBirthStatusList() {
 				const res = await this.$http.request({
-					url: "/birthStatus/getBirthStatusList",
+					url: "/baseList/getBirthStatusList",
 					method: "get",
 					data: {}
 				});
@@ -854,7 +849,7 @@
 			},
 			async getBreastHealthStatusList() {
 				const res = await this.$http.request({
-					url: "/breastHealthStatus/getBreastHealthStatusList",
+					url: "/baseList/getBreastHealthStatusList",
 					method: "get",
 					data: {}
 				});
@@ -867,7 +862,7 @@
 			},
 			async getFeedingModeList() {
 				const res = await this.$http.request({
-					url: "/feedingMode/getFeedingModeList",
+					url: "/baseList/getFeedingModeList",
 					method: "get",
 					data: {}
 				});
@@ -880,7 +875,7 @@
 			},
 			async getHealthEvaluationList() {
 				const res = await this.$http.request({
-					url: "/healthEvaluation/getHealthEvaluationList",
+					url: "/baseList/getHealthEvaluationList",
 					method: "get",
 					data: {}
 				});
@@ -893,7 +888,7 @@
 			},
 			async getEntryAgeList() {
 				const res = await this.$http.request({
-					url: "/entryAge/getEntryAgeList",
+					url: "/baseList/getEntryAgeList",
 					method: "get",
 					data: {}
 				});
@@ -906,7 +901,7 @@
 			},
 			async getFattenTimeList() {
 				const res = await this.$http.request({
-					url: "/fattenTime/getFattenTimeList",
+					url: "/baseList/getFattenTimeList",
 					method: "get",
 					data: {}
 				});
@@ -919,7 +914,7 @@
 			},
 			async getCalfFeedingModeList() {
 				const res = await this.$http.request({
-					url: "/calfFeedingMode/getCalfFeedingModeList",
+					url: "/baseList/getCalfFeedingModeList",
 					method: "get",
 					data: {}
 				});
@@ -932,7 +927,7 @@
 			},
 			async getCowFeedingModeList() {
 				const res = await this.$http.request({
-					url: "/feedingMode/getFeedingModeList",
+					url: "/baseList/getFeedingModeList",
 					method: "get",
 					data: {}
 				});

@@ -96,7 +96,7 @@
 							</view>
 						</view>
 						<block v-if="item.category==3">
-							<view class="form-list" v-if="source==0">
+							<view class="form-list" v-if="item.source==0">
 								<view class="form-title">
 									来源编号：
 								</view>
@@ -349,11 +349,11 @@
 					}
 				});
 				if (res.status === "E") {
-					this.errorToast(res.msg);
+					errorToast(res.msg);
 					return false;
 				}
 				const resData=res.data
-				this.dataList = resData.data;
+				this.dataList = resData;
 			},
 			previewImage: function(e) {
 				const current = e.target.dataset.src
@@ -362,14 +362,6 @@
 					current: current,
 					urls: imageList
 				})
-			},
-			errorToast(title, icon) {
-				uni.showToast({
-					title: title,
-					duration: 2000,
-					mask: true,
-					icon: icon || "none"
-				});
 			}
 		}
 	};

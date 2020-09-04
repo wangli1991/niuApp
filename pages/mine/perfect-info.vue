@@ -9,10 +9,10 @@
               <text>*</text>：
             </view>
             <view class="form-input" v-if="isPerfect==0">
-              <picker mode="selector" :range="userPropertyList" @change="userPropertyChange">
+              <picker mode="selector" :range="ownerPropertyList" @change="ownerPropertyChange">
                 <input
                   type="text"
-                  :value="userProperty"
+                  :value="ownerProperty"
                   class="input"
                   placeholder="请选择产权人性质"
                   disabled
@@ -28,7 +28,7 @@
             <input
               type="text"
               class="form-input"
-              :value="userProperty"
+              :value="ownerProperty"
               disabled
               v-if="isPerfect==1"
             />
@@ -645,8 +645,8 @@ export default {
       familyAddress: "", //家庭地址
       workAddressDate: "", //办公地址 地区
       workAddress: "", //办公地址
-      userProperty: "", //产权人性质
-      userPropertyList: [], //产权人性质List
+      ownerProperty: "", //产权人性质
+      ownerPropertyList: [], //产权人性质List
       areaManage: "", //片区管理
       manageAreaInfo: "", //管理片区明细
       leaderName: "", //负责人姓名
@@ -694,49 +694,44 @@ export default {
         _this.actionIconSize = 40 * format;
       }
     });
-    uni.getStorage({
-      key: "userinfo",
-      success: function(res) {
-        const userInfo = JSON.parse(res.data);
-        _this.uid = userInfo.uid;
-        _this.userType = userInfo.usertype;
-        _this.userNo = userInfo.userno;
-        _this.userProperty = userInfo.user_property;
-        _this.ownerAddress = userInfo.owner_address;
-        _this.ownerAddressDate = userInfo.owner_area;
-        _this.manageAddress = userInfo.manage_address;
-        _this.manageAddressDate = userInfo.manage_area;
-        _this.familyAddress = userInfo.family_address;
-        _this.familyAddressDate = userInfo.family_area;
-        _this.workAddress = userInfo.work_address;
-        _this.workAddressDate = userInfo.work_area;
-        _this.manageAreaInfo = userInfo.manage_area_info;
-        _this.leaderName = userInfo.leader_name;
-        _this.areaManage = userInfo.area_manage;
-        _this.breedRange = userInfo.breed_range;
-        _this.memberCount = userInfo.member_count;
-        _this.breedFacilities = userInfo.breed_facilities;
-        _this.breedVariety = userInfo.breed_variety;
-        _this.technicalLevel = userInfo.technical_level;
-        _this.creditGrade = userInfo.credit_grade;
-        _this.contactTel = userInfo.contact_tel;
-        _this.ownerInfo = userInfo.owner_info;
-        _this.age = userInfo.age;
-        _this.education = userInfo.education;
-        _this.nation = userInfo.nation;
-        _this.occupation = userInfo.occupation;
-        _this.technicalGrade = userInfo.technical_grade;
-        _this.jobProperty = userInfo.job_property;
-        _this.healthStatus = userInfo.health_status;
-        _this.presentAddress = userInfo.present_address;
-        _this.presentAddressDate = userInfo.present_area;
-        _this.idNumber = userInfo.id_number;
-        _this.isPerfect = userInfo.is_perfect;
-      }
-    });
+	const userInfo = JSON.parse(uni.getStorageSync('userinfo'));
+    _this.uid = userInfo.uid;
+    _this.userType = userInfo.usertype;
+    _this.userNo = userInfo.userno;
+    _this.ownerProperty = userInfo.owner_property;
+    _this.ownerAddress = userInfo.owner_address;
+    _this.ownerAddressDate = userInfo.owner_area;
+    _this.manageAddress = userInfo.manage_address;
+    _this.manageAddressDate = userInfo.manage_area;
+    _this.familyAddress = userInfo.family_address;
+    _this.familyAddressDate = userInfo.family_area;
+    _this.workAddress = userInfo.work_address;
+    _this.workAddressDate = userInfo.work_area;
+    _this.manageAreaInfo = userInfo.manage_area_info;
+    _this.leaderName = userInfo.leader_name;
+    _this.areaManage = userInfo.area_manage;
+    _this.breedRange = userInfo.breed_range;
+    _this.memberCount = userInfo.member_count;
+    _this.breedFacilities = userInfo.breed_facilities;
+    _this.breedVariety = userInfo.breed_variety;
+    _this.technicalLevel = userInfo.technical_level;
+    _this.creditGrade = userInfo.credit_grade;
+    _this.contactTel = userInfo.contact_tel;
+    _this.ownerInfo = userInfo.owner_info;
+    _this.age = userInfo.age;
+    _this.education = userInfo.education;
+    _this.nation = userInfo.nation;
+    _this.occupation = userInfo.occupation;
+    _this.technicalGrade = userInfo.technical_grade;
+    _this.jobProperty = userInfo.job_property;
+    _this.healthStatus = userInfo.health_status;
+    _this.presentAddress = userInfo.present_address;
+    _this.presentAddressDate = userInfo.present_area;
+    _this.idNumber = userInfo.id_number;
+    _this.isPerfect = userInfo.is_perfect;
 
     this.getUserInfo();
-    this.getUserPropertyList();
+    this.getOwnerPropertyList();
     this.getBreedRangeList();
     this.getMemberCountList();
     this.getBreedFacilitiesList();
@@ -785,7 +780,7 @@ export default {
         familyAddress,
         workAddressDate,
         workAddress,
-        userProperty,
+        ownerProperty,
         areaManage,
         manageAreaInfo,
         leaderName,
@@ -822,7 +817,7 @@ export default {
         family_address: familyAddress,
         work_area: workAddressDate,
         work_address: workAddress,
-        user_property: userProperty,
+        owner_property: ownerProperty,
         area_manage: areaManage,
         manage_area_info: manageAreaInfo,
         leader_name: leaderName,
@@ -868,8 +863,8 @@ export default {
     scroll(e) {
       this.old.scrollTop = e.detail.scrollTop;
     },
-    userPropertyChange(e) {
-      this.userProperty = this.userPropertyList[e.detail.value];
+    ownerPropertyChange(e) {
+      this.ownerProperty = this.ownerPropertyList[e.detail.value];
     },
     async ownerAddressChange(e) {
       const ownerArea = e.dataList;
@@ -957,7 +952,6 @@ export default {
       this.creditGrade = this.creditGradeList[e.detail.value];
     },
     ownerInfoChange(e) {
-      console.log(e.detail.value);
       this.ownerInfo = this.ownerInfoList[e.detail.value];
     },
     technicalGradeChange(e) {
@@ -966,9 +960,9 @@ export default {
     healthStatusChange(e) {
       this.healthStatus = this.healthStatusList[e.detail.value];
     },
-    async getUserPropertyList() {
+    async getOwnerPropertyList() {
       const res = await this.$http.request({
-        url: "/userProperty/getUserPropertyList",
+        url: "/baseList/getOwnerPropertyList",
         method: "get",
         data: {}
       });
@@ -977,11 +971,11 @@ export default {
       resData.forEach(function(val) {
         dataList.push(val.name);
       });
-      this.userPropertyList = dataList;
+      this.ownerPropertyList = dataList;
     },
     async getBreedRangeList() {
       const res = await this.$http.request({
-        url: "/breedRange/getBreedRangeList",
+        url: "/baseList/getBreedRangeList",
         method: "get",
         data: {}
       });
@@ -994,7 +988,7 @@ export default {
     },
     async getMemberCountList() {
       const res = await this.$http.request({
-        url: "/memberCount/getMemberCountList",
+        url: "/baseList/getMemberCountList",
         method: "get",
         data: {}
       });
@@ -1007,7 +1001,7 @@ export default {
     },
     async getBreedFacilitiesList() {
       const res = await this.$http.request({
-        url: "/breedFacilities/getBreedFacilitiesList",
+        url: "/baseList/getBreedFacilitiesList",
         method: "get",
         data: {}
       });
@@ -1020,7 +1014,7 @@ export default {
     },
     async getbreedVarietyList() {
       const res = await this.$http.request({
-        url: "/variety/getVarietyList",
+        url: "/baseList/getVarietyList",
         method: "get",
         data: {}
       });
@@ -1033,7 +1027,7 @@ export default {
     },
     async getEducationList() {
       const res = await this.$http.request({
-        url: "/education/getEducationList",
+        url: "/baseList/getEducationList",
         method: "get",
         data: {}
       });
@@ -1046,7 +1040,7 @@ export default {
     },
     async getJobPropertyList() {
       const res = await this.$http.request({
-        url: "/jobProperty/getJobPropertyList",
+        url: "/baseList/getJobPropertyList",
         method: "get",
         data: {}
       });
@@ -1059,7 +1053,7 @@ export default {
     },
     async getHealthStatusList() {
       const res = await this.$http.request({
-        url: "/healthStatus/getHealthStatusList",
+        url: "/baseList/getHealthStatusList",
         method: "get",
         data: {}
       });
@@ -1072,7 +1066,7 @@ export default {
     },
     async getTechnicalLevelList() {
       const res = await this.$http.request({
-        url: "/technicalLevel/getTechnicalLevelList",
+        url: "/baseList/getTechnicalLevelList",
         method: "get",
         data: {}
       });
@@ -1085,7 +1079,7 @@ export default {
     },
     async getCreditGradeList() {
       const res = await this.$http.request({
-        url: "/creditGrade/getCreditGradeList",
+        url: "/baseList/getCreditGradeList",
         method: "get",
         data: {}
       });
@@ -1098,7 +1092,7 @@ export default {
     },
     async getOwnerInfoList() {
       const res = await this.$http.request({
-        url: "/ownerInfo/getOwnerInfoList",
+        url: "/baseList/getOwnerInfoList",
         method: "get",
         data: {}
       });
@@ -1111,7 +1105,7 @@ export default {
     },
     async getTechnicalGradeList() {
       const res = await this.$http.request({
-        url: "/technicalGrade/getTechnicalGradeList",
+        url: "/baseList/getTechnicalGradeList",
         method: "get",
         data: {}
       });

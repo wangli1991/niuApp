@@ -28,24 +28,35 @@
 						</view>
 					</view>
 					<view class="ranch-box">
-						<scroll-view enableBackToTop="true" scroll-y class="scroll-Y" :lower-threshold="lowerHeight" @scrolltolower="loadMore" v-if="dataList.length>0">
+						<scroll-view enableBackToTop="true" scroll-y class="scroll-Y" :lower-threshold="lowerHeight" @scrolltolower="loadMore"
+						 v-if="count>0">
 							<view class="ranch-item" v-for="(item,index) in dataList" :key="index">
 								<view class="item-container">
 									<view class="container">
 										<view class="txt" @tap="popShow(index)">
 											<view class="head">
 												<view class="title">
-													{{item.variety}}
+													<text>{{item.variety}}牛</text>
+													<text class="red" v-if="item.action_show==='pz'">{{item.mating_days===0?'刚配种':'配种后'+item.mating_days+'天'}}</text>
+													<text class="red" v-else-if="item.action_show==='hy'">{{item.pregnancy_days===0?'刚怀孕':'怀孕后'+item.pregnancy_days+'天'}}</text>
+													<text class="red" v-else-if="item.action_show==='lc'">{{item.abortion_days===0?'刚流产':'流产后'+item.abortion_days+'天'}}</text>
+													<text class="red" v-else-if="item.action_show==='cd'">{{item.calving_days===0?'刚产犊':'产犊后'+item.calving_days+'天'}}</text>
+													<text v-else>{{item.sex===1?'雄性':'雌性'}}</text>
 												</view>
 												<view class="no">
-													{{item.archivesno}}
+													No.{{item.archivesno}}
 												</view>
 											</view>
-											<view class="age">
-												{{item.sex}}
+											<view class="foot">
+												<view>
+													{{item.age}}
+												</view>
+												<view v-if="item.house">
+													{{item.house}}圈舍
+												</view>
 											</view>
 										</view>
-										<view class="more" @tap="goDetai(index)">
+										<view class="more" @tap="goRecords(index)">
 											<uni-icons class="more-icon" type="arrowright" :size="moreIconSize"></uni-icons>
 										</view>
 									</view>
@@ -60,35 +71,39 @@
 							</view>
 						</scroll-view>
 						<view class="kong" v-else>
-							<cover-image class="img" src="../../static/kong.gif"></cover-image>
+							暂无数据
 						</view>
 					</view>
 				</swiper-item>
 			</swiper>
 		</view>
-		<uni-foot-pop :category="category" :is-pop-show="isPopShow" @close="popClose" @action="popAction" v-if="category"/>
+		<uni-action :category="category" :is-pop-show="isPopShow" @close="popClose" @action="popAction" v-if="category" />
 	</view>
 </template>
 
 <script>
+	import {
+		dateUtils,
+		formatDateTime
+	} from '../../common/util.js'
 	export default {
 		data() {
 			return {
+				uid: "",
 				sortType: 'none', //当前排序类型
 				categoryList: [], //分类List
 				currentCategory: 0, //选中分类 index
 				moreIconSize: 30, //更多图标字体大小
 				pageSize: 10, //每次加载数据数量
 				pageNo: 0, //已加载分页数
-				dataId:'',//选中列表id
+				currentId: '', //选中列表id
 				dataList: [], //牛列表List
 				count: 0, //分类下牛数量
 				maxCount: 0, //已加载条数
 				lowerHeight: 0, //距底部多远时触发 scrolltolower 事件
+				isPopShow: false, //是否显示底部弹窗
 				loadMoreText: "加载中...",
-				isShowLoadMore: false,
-				uid: "",
-				isPopShow:false//是否显示底部弹窗
+				isShowLoadMore: false
 			}
 		},
 		mounted() {
@@ -100,19 +115,14 @@
 					_this.lowerHeight = 50 * format
 				}
 			})
-			uni.getStorage({
-				key: "userinfo",
-				success: function(res) {
-					const userInfo = JSON.parse(res.data);
-					_this.uid = userInfo.uid;
-				}
-			})
+			const userInfo = JSON.parse(uni.getStorageSync('userinfo'));
+			this.uid = userInfo.uid;
 			this.maxCount = this.pageSize
 			this.getCategoryList()
 		},
-		computed:{
-			category(){
-				return this.categoryList.length>0?this.categoryList[this.currentCategory].id:null
+		computed: {
+			category() {
+				return this.categoryList.length > 0 ? this.categoryList[this.currentCategory].id : null
 			}
 		},
 		methods: {
@@ -134,7 +144,9 @@
 					loading: false,
 					url: "/niu/getCategoryList",
 					method: "get",
-					data: {category:''}
+					data: {
+						category: ''
+					}
 				});
 				const resData = res.data;
 				this.categoryList = resData;
@@ -165,6 +177,13 @@
 				const resData = res.data;
 				this.count = resData.count
 				this.dataList = resData.data;
+				this.dataList.forEach((val) => {
+					val.age = this.getAge(val)
+					val.mating_days=val.mating_date?dateUtils.diff(val.mating_date+' 00:00:00'):''
+					val.pregnancy_days=val.pregnancy_date?dateUtils.diff(val.pregnancy_date+' 00:00:00'):''
+					val.abortion_days=val.abortion_date?dateUtils.diff(val.abortion_date+' 00:00:00'):''
+					val.calving_days=val.calving_date?dateUtils.diff(val.calving_date+' 00:00:00'):''
+				})
 			},
 			async getDataList() {
 				const {
@@ -189,36 +208,74 @@
 				}
 				const resData = res.data;
 				this.dataList = this.dataList.concat(resData.data);
+				this.dataList.forEach((val) => {
+					val.age = this.getAge(val)
+				})
 			},
-			goDetai(index) {
-				this.dataId=this.dataList[index].id
+			getAge(val) {
+				let age;
+				const nowDate = formatDateTime(new Date(), 'date')
+				const enterDate = val.date
+				const letter = this.categoryList[this.currentCategory].letter
+				const nowDateList = nowDate.split('-')
+				const enterDateList = enterDate.split('-')
+				const difYear = parseInt(nowDateList[0]) - parseInt(enterDateList[0])
+				const difMonth = parseInt(nowDateList[1]) - parseInt(enterDateList[1])
+				const difDay = parseInt(nowDateList[2]) - parseInt(enterDateList[2])
+				let difAge = 12 * difYear+difMonth
+				if(difAge===0){
+					age=difDay+1+'天'
+				}else{
+					if(difDay<0){
+						difAge-=1
+					}
+					age=difAge+'个月'
+				}
+				if (letter === 'F') { //育肥牛
+					const entryAge = val.entry_age
+					if(age.indexOf('月')!==-1){
+						age=parseInt(age)+parseInt(entryAge)+'个月'
+					}else{
+						age=parseInt(entryAge)+'个月'
+					}
+				}
+				return age
+			},
+			goRecords(index) {
+				const {id,variety,archivesno,age,house}=this.dataList[index]
 				this.$Router.push({
-					path: "/pages/ranch/ranch-detail",
+					path: "/pages/records/index",
 					query: {
-						id: this.dataId
+						id: id,
+						variety:variety,
+						archivesno:archivesno,
+						age:age,
+						house:house
 					}
 				});
 			},
-			popAction(e){
-				console.log(e)
-				this.isPopShow=false
+			popAction(e) {
+				const dataDetail=this.dataList.filter(x=>x.id===this.currentId)
+				this.isPopShow = false
 				this.$Router.push({
-					path: e.path,
+					path: '/pages/ranch/actions',
 					query: {
-						niuId: this.dataId,
+						data:dataDetail[0],
+						niuId: this.currentId,
 						category: this.category,
-						actionMenuId:e.actionMenuId,
-						actionMenuName:e.actionMenuName,
+						actionMenuId: e.actionMenuId,
+						actionMenuName: e.actionMenuName,
+						actionMenuCode: e.actionMenuCode
 					}
 				});
 			},
 			popShow(index) {
-				this.dataId=this.dataList[index].id
-				this.isPopShow=true
+				this.currentId = this.dataList[index].id
+				this.isPopShow = true
 			},
-			popClose(e){
-				if(e){
-					this.isPopShow=false
+			popClose(e) {
+				if (e) {
+					this.isPopShow = false
 				}
 			},
 			sortTap() {
@@ -271,8 +328,10 @@
 		.ranch-tabs {
 			background-color: #fff;
 			display: flex;
+			height: 80rpx;
 
 			.item {
+				height: 80rpx;
 				flex: 1;
 				font-size: $uni-font-size-lg;
 				color: $uni-text-color;
@@ -363,17 +422,25 @@
 										display: flex;
 										justify-content: space-between;
 										align-items: center;
-										.txt{
+
+										.txt {
 											flex: 1;
+
 											.head {
 												display: flex;
 												justify-content: space-between;
-												
+
 												.title {
 													font-size: $uni-font-size-base;
 													line-height: 1;
+													text:last-child{
+														padding-left: 20rpx;
+														&.red{
+															color:#f00
+														}
+													}
 												}
-											
+
 												.no {
 													font-size: $uni-font-size-base;
 													line-height: 1;
@@ -382,14 +449,16 @@
 											}
 										}
 
-										.age {
+										.foot {
 											font-size: $uni-font-size-base;
 											line-height: 1;
 											margin-top: 35rpx;
+											display: flex;
+											justify-content: space-between;
 										}
 
 										.more {
-											width: 100rpx;
+											width: 50rpx;
 											text-align: center;
 											line-height: 1;
 
@@ -430,9 +499,10 @@
 									line-height: 1;
 								}
 							}
-							
+
 						}
-						.kong{
+
+						.kong {
 							width: 100%;
 							height: 100%;
 							display: flex;
@@ -440,15 +510,11 @@
 							justify-content: center;
 							align-items: center;
 							background-color: #fbfbfb;
-							.img{
-								width: 100%;
-								height: auto;
-							}
+							font-size: $uni-font-size-lg;
 						}
 					}
 				}
 			}
 		}
 	}
-
 </style>

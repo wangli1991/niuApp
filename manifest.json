@@ -83,7 +83,9 @@
             "disableHostCheck" : true,
             "proxy" : {
                 "/api" : {
-                    "target" : "http://10.133.67.35:8888",
+                    // "target" : "http://39.106.219.221:8888",
+                    "target" : "http://10.133.67.74:8888",
+					// "target" : "http://192.168.0.5:8888",
                     "changeOrigin" : true,
                     "secure" : false
                 }

@@ -28,10 +28,6 @@ const router = new Router({
 			name: "ranchDetail",
 		},
 		{
-			path: "/pages/ranch/variety-change",
-			name: "varietyChange",
-		},
-		{
 			path: "/pages/mine/mine",
 			name: "mine",
 		},
@@ -71,11 +67,37 @@ const router = new Router({
 			path: "/pages/ranch/info-enter",
 			name: "infoEnter",
 		},
+		{
+			path: "/pages/ranch/map",
+			name: "map",
+		},
+		{
+			path: "/pages/records/index",
+			name: "records",
+		},
+		{
+			path: "/pages/records/records-list",
+			name: "recordsList",
+		},
+		{
+			path: "/pages/ranch/actions",
+			name: "actions",
+		}
 	], //路由表
 });
 
 //全局路由前置守卫
 router.beforeEach((to, from, next) => {
+	// #ifndef H5
+	if(to.name=='records'||to.name=='recordsList'){
+		plus.screen.lockOrientation('landscape-primary'); //锁死屏幕方向为横屏  
+		console.log(`横屏：${JSON.stringify(plus.screen.getCurrentSize())}`)
+	}else{
+		plus.screen.unlockOrientation();
+		plus.screen.lockOrientation('portrait-primary'); //锁死屏幕方向为横屏  
+		console.log(`竖屏：${JSON.stringify(plus.screen.getCurrentSize())}`)
+	}
+	// #endif
 	console.log(to, from);
 	if (
 		to.name === "mine" ||
@@ -84,8 +106,8 @@ router.beforeEach((to, from, next) => {
 		to.name === "infoEnter"
 	) {
 		try {
-			const value = uni.getStorageSync("userinfo");
-			if (!value) {
+			const userInfo = uni.getStorageSync('userinfo');
+			if (!userInfo) {
 				next({
 					name: "login",
 					NAVTYPE: "push",

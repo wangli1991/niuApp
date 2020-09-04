@@ -166,6 +166,9 @@ form {
 	background:#FFF;
 	flex: 1;
 }
+.uni-input-placeholder{
+	color: #999;
+}
 radio-group, checkbox-group{
 	width:100%;
 }
